@@ -1,0 +1,39 @@
+<h2><%= @list.name %></h2>
+
+<h4>
+  <%= link_to "New list - to upgrade", lists_path %>
+</h4>
+
+<h4>
+  <%= @list.movies.count %> movies
+</h4>
+
+<h4>
+  <%= link_to "Back to lists", lists_path %>
+</h4>
+
+<h4>
+  <%= link_to "Add a movie - to upgrade", lists_path %>
+</h4>
+<%= simple_form_for [@list, @bookmark] do |f| %>
+  <%= f.association :movie %>
+  <%= f.input :comment %>
+  <%= f.submit "Create", class: "btn btn-primary"%>
+<% end %>
+
+<ul>
+  <% @list.bookmarks.each do |bookmark| %>
+    <%= image_tag bookmark.movie.poster_url, alt: "Le Wagon" %>
+    <li>
+      <%= bookmark.movie.title %>
+      | Rating :
+      <%= bookmark.movie.rating %>
+      |
+      <%= link_to "Delete",
+      bookmark_path(bookmark),
+      data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
+    </li>
+    <li><%= bookmark.movie.overview %></li>
+    <li><%= bookmark.comment %></li>
+  <% end %>
+</ul>

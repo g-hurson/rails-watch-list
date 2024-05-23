@@ -12,9 +12,11 @@ require "json"
 require "open-uri"
 
 puts "Cleaning database..."
+Bookmark.destroy_all
 Movie.destroy_all
+List.destroy_all
 
-puts "Creating movies..."
+puts "Creating list, movies and bookmarks..."
 
 # Movie.create(title: "Wonder Woman 1984", overview: "Wonder Woman comes into conflict with the Soviet Union during the Cold War in the 1980s", poster_url: "https://image.tmdb.org/t/p/original/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg", rating: 6.9)
 # puts "Created Wonder Woman 1984"
@@ -25,18 +27,29 @@ puts "Creating movies..."
 # Movie.create(title: "Ocean's Eight", overview: "Debbie Ocean, a criminal mastermind, gathers a crew of female thieves to pull off the heist of the century.", poster_url: "https://image.tmdb.org/t/p/original/MvYpKlpFukTivnlBhizGbkAe3v.jpg", rating: 7.0)
 # puts "Created Ocean's Eight"
 
-url = "https://tmdb.lewagon.com/movie/popular"
+list = List.create(
+  name: "all_movies"
+)
+puts "Created #{list.name} list"
+
+url = "https://tmdb.lewagon.com/movie/top_rated"
 response_serialized = URI.open(url).read
 response_parsed = JSON.parse(response_serialized)
 
-response_parsed["results"].each do |movie|
-  Movie.create(
+response_parsed["results"].each_with_index do |movie, index|
+  new_movie = Movie.create(
     title: movie["original_title"],
     overview: movie["overview"],
     poster_url: "https://image.tmdb.org/t/p/w185#{movie["poster_path"]}",
     rating: movie["vote_average"]
   )
-  puts "Created #{movie["original_title"]}"
+  puts "Created #{new_movie.title}"
+  bookmark = Bookmark.new()
+  bookmark.comment = "comment_#{index}_#{new_movie.title}"
+  bookmark.movie = new_movie
+  bookmark.list = list
+  bookmark.save!
+  puts "Created #{bookmark.comment}"
 end
 
 puts "Finished!"
