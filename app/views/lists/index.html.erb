@@ -1,14 +1,40 @@
-<ul>
-  <% @lists.each do |list| %>
-    <li>
-      <%= link_to list.name, list_path(list) %>
-      | id :
-      <%= list.id %>
-    </li>
-  <% end %>
-</ul>
+<div class="banner"
+  style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),
+    url(https://images.pexels.com/photos/109669/pexels-photo-109669.jpeg);">
+  <div class="container text-center">
+    <h1>Save any kind of movies !</h1>
+    <a class="btn btn-info rounded m-3" data-bs-toggle="collapse" href="#collapseForm" role="button" aria-expanded="false" aria-controls="collapseForm">
+      Create a movie list
+    </a>
+  </div>
+</div>
 
-<%= simple_form_for(@list) do |f| %>
-  <%= f.input :name %>
-  <%= f.submit "Submit", class: "btn btn-primary"%>
-<% end %>
+<div class="d-flex justify-content-center">
+  <div class="collapse <%= 'show' if @show_form %> m-4 w-25 text-center" id="collapseForm">
+    <%= simple_form_for(@list) do |f| %>
+      <div class="form-group">
+        <%= f.input :name, class: "form-control" %>
+      </div>
+      <%= f.submit "Submit", class: "btn btn-info"%>
+    <% end %>
+  </div>
+</div>
+
+<h2 class="mt-4 mx-4"> My lists (<%= @lists.count %>)</h2>
+<div class="row row-cols-md-3 row-cols-lg-4 g-4 card-group mt-2 mx-4">
+  <% @lists.each do |list| %>
+    <div class="col">
+      <div class="card-trip">
+        <img src="https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/greece.jpg" />
+        <div class="card-trip-infos">
+            <h2><%= link_to list.name, list_path(list), class: "text-decoration-none text-dark" %></h2>
+            <div>
+              <%= link_to list_path(list), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} do %>
+              <i class="fa-solid fa-trash-can text-dark"></i>
+              <% end %>
+            </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

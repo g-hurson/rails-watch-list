@@ -1,39 +1,54 @@
-<h2><%= @list.name %></h2>
+<div class="banner"
+  style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),
+    url(https://images.pexels.com/photos/109669/pexels-photo-109669.jpeg);">
+  <span><%= @list.movies.count %> movies</span>
+  <div class="container text-center">
+    <h1><%= @list.name %></h1>
+    <a class="btn btn-info rounded m-3" data-bs-toggle="collapse" href="#collapseForm" role="button" aria-expanded="false" aria-controls="collapseForm">
+      Add a movie
+    </a>
+  </div>
+</div>
 
-<h4>
-  <%= link_to "New list - to upgrade", lists_path %>
-</h4>
+<div class="d-flex justify-content-center">
+  <div class="collapse <%= 'show' if @show_form  %> m-4 w-25 text-center" id="collapseForm">
+    <%= simple_form_for [@list, @bookmark] do |f| %>
+      <div class="form-group">
+        <%= f.association :movie %>
+        <%= f.input :comment, class: "form-control" %>
+      </div>
+      <%= f.submit "Add this movie", class: "btn btn-info"%>
+    <% end %>
+  </div>
+</div>
 
-<h4>
-  <%= @list.movies.count %> movies
-</h4>
-
-<h4>
-  <%= link_to "Back to lists", lists_path %>
-</h4>
-
-<h4>
-  <%= link_to "Add a movie - to upgrade", lists_path %>
-</h4>
-<%= simple_form_for [@list, @bookmark] do |f| %>
-  <%= f.association :movie %>
-  <%= f.input :comment %>
-  <%= f.submit "Create", class: "btn btn-primary"%>
-<% end %>
-
-<ul>
+<div class="row row-cols-md-1 row-cols-lg-2 g-4 card-group mt-2 mx-4">
   <% @list.bookmarks.each do |bookmark| %>
-    <%= image_tag bookmark.movie.poster_url, alt: "Le Wagon" %>
-    <li>
-      <%= bookmark.movie.title %>
-      | Rating :
-      <%= bookmark.movie.rating %>
-      |
-      <%= link_to "Delete",
-      bookmark_path(bookmark),
-      data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
-    </li>
-    <li><%= bookmark.movie.overview %></li>
-    <li><%= bookmark.comment %></li>
+    <div class="col">
+      <div class="card-movie">
+        <%= image_tag bookmark.movie.poster_url, alt: bookmark.movie.title %>
+        <div class="card-movie-infos">
+            <div class="card-movie-title-rating">
+              <h2 class="fs-5">
+                <%= bookmark.movie.title %>
+              </h2>
+              <span class="card-movie-rating">
+                <%= bookmark.movie.rating.round(1) %>
+                <i class="fa-solid fa-star text-warning"></i>
+              </span>
+            </div>
+            <p><%= bookmark.movie.overview %></p>
+            <div class="card-movie-comment-delete">
+              <span>
+                <i class="fa-solid fa-quote-left text-dark"></i>
+                <%= bookmark.comment %>
+              </span>
+              <%= link_to bookmark_path(bookmark), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} do %>
+                <i class="fa-solid fa-trash-can text-dark"></i>
+              <% end %>
+            </div>
+        </div>
+      </div>
+    </div>
   <% end %>
-</ul>
+</div>

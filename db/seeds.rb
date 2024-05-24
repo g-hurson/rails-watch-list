@@ -28,7 +28,7 @@ puts "Creating list, movies and bookmarks..."
 # puts "Created Ocean's Eight"
 
 list = List.create(
-  name: "all_movies"
+  name: "All my movies"
 )
 puts "Created #{list.name} list"
 
@@ -40,7 +40,7 @@ response_parsed["results"].each_with_index do |movie, index|
   new_movie = Movie.create(
     title: movie["original_title"],
     overview: movie["overview"],
-    poster_url: "https://image.tmdb.org/t/p/w185#{movie["poster_path"]}",
+    poster_url: "https://image.tmdb.org/t/p/w500#{movie["poster_path"]}",
     rating: movie["vote_average"]
   )
   puts "Created #{new_movie.title}"

@@ -13,10 +13,17 @@ class ListsController < ApplicationController
     @lists = List.all
     @list = List.new(list_params)
     if @list.save
-      redirect_to lists_path(@list)
+      redirect_to lists_path
     else
+      @show_form = true
       render "index", status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @list = List.find(params[:id])
+    @list.destroy
+    redirect_to lists_path, status: :see_other
   end
 
   private
